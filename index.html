@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ffec00767f4a42768f7520a896d1f1be"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
   <title>Lab 9</title>
 
   <style>
@@ -53,6 +60,8 @@
     <button>End Timer</button>
     <button>Console Trace</button>
     <button>Trigger a Global Error</button>
+    <button>Console Try/Catch</button>
+    <button>Throw Test</button>
   </section>
 
   <script>
@@ -67,6 +76,92 @@
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    errorBtns[0].onclick = ()=>{
+      let output = document.querySelector('output').value;
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      console.log(firstNum+operator+secondNum+"="+output);
+    };
+    errorBtns[1].onclick = ()=>{
+      let output = document.querySelector('output').value;
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      console.error("Error! "+firstNum+operator+secondNum+"="+output);
+    };
+    errorBtns[2].onclick = ()=>{console.dir(document.head);};
+    errorBtns[3].onclick = ()=>{console.dirxml(document);};
+
+    const label = 'Group:';
+    errorBtns[4].onclick = ()=>{
+      console.group(label);
+      console.info("group started");
+    }
+    errorBtns[5].onclick = ()=>{
+      console.info('group ended');
+      console.groupEnd(label);
+    }
+    errorBtns[6].onclick = ()=>{
+      let table = [{
+        lab: "9",
+        name: "JavaScript Error Handling, Monitoring, & JS Docs",
+        course: "CSE 110"
+      },{
+        lab: "8",
+        name: "Unit & E2E Testing",
+        course: "CSE 110"
+      }]
+        console.table(table);
+    }
+    errorBtns[7].onclick = ()=>{
+      console.time();
+      console.log("timer started");
+    }
+    errorBtns[8].onclick = ()=>{console.timeEnd();}
+    let thirdstep = ()=>{console.trace();}
+    let secondstep = ()=>{thirdstep();}
+    let firststep = ()=>{secondstep();}
+    errorBtns[9].onclick = ()=>{firststep();}
+    errorBtns[10].onclick = ()=>{
+      nonexistingFunction();
+    }
+
+    errorBtns[11].onclick = ()=>{
+      try{
+        let nonexistBtn = document.querySelector("nonexists-button");
+        nonexistBtn.onclick = ()=>{
+          console.log("I am here");
+        }
+      } catch(err){
+        console.error("Button Does Not Exist");
+      }
+    }
+
+    class MyButtonClickError extends Error{
+      constructor(message){
+        super(message);
+        this.name = "MyButtonClickError";
+      }
+    }
+    function throwTest(){
+      throw new MyButtonClickError("Button Click Error!");
+    }
+    errorBtns[12].onclick = ()=>{
+      try{
+        throwTest();
+      } catch(err){
+        console.log("error catched:");
+        console.error(err);
+      }
+    }
+
+    window.onerror = function (msg)
+    {
+      TrackJS.track(msg);
+      console.log("error message sent to TrackJS");
+      return true;
+    }
   </script>
 </body>
 </html>
